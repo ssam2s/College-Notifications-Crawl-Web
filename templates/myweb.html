@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>금오공과대학교 공지사항</title>
+    <link rel="stylesheet" href="../src/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <link rel1="stylesheet" href1="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body link="#f0f0f0" alink="#9c9c9c" vlink="#9c9c9c">
+<div class="titlebar_background">
+    <div class="titlebar_text">
+        <h1>Kumoh Institute of Technology</h1>
+    </div>
+</div>
+<div class="nowtime">
+    <script type="text/javascript">
+        var nowDate = new Date();
+        document.write("최근 업데이트 : ");
+        var newHours =  nowDate.getHours();
+        document.write(newHours + "시 ");
+        var newMinutes = nowDate.getMinutes();
+        document.write(newMinutes + "분 ");
+    </script>
+</div>
+<section class="pop_up_background">
+    <span class="calendar">
+        <h3>학사 일정</h3>
+        <div id="Schedule_table"></div>
+    </span>
+    <span class="weather">
+        <h3>캠퍼스 날씨</h3>
+        <div id="offer">날씨 정보 제공 : Naver Weather</div>
+        <div id="weather_update">
+            <script>
+                var nowDate = new Date();
+                var newHours =  nowDate.getHours();
+                var newMinutes = nowDate.getMinutes();
+                document.write(newHours + " : " + newMinutes + " 기준");
+            </script>
+        </div>
+        <div id="Weather_table"></div>
+    </span>
+</section>
+<span class="table_background_first">
+    <div class="menu_1">
+        <button>금오 공지</button><button style="margin-left: 1%">학과 공지</button><button style="margin-left: 1%">구인 정보</button>
+    </div>
+    <div class="left">
+        <button id="refresh">새로고침</button>
+        <h2 id="Univ_title">금오 공지</h2>
+        <div id="Univ_Notice_table"></div>
+    </div>
+</span>
+<span class="table_background_second">
+    <div class="menu_2">
+        <button>금오 공지</button><button style="margin-left: 1%">학과 공지</button><button style="margin-left: 1%">구인 정보</button>
+    </div>
+    <div class="center">
+        <h2 id="Depart_title">학과 공지</h2>
+        <div id="Depart_Notice_table"></div>
+    </div>
+</span>
+<span class="table_background_third">
+    <div class="menu_3">
+        <button>금오 공지</button><button style="margin-left: 1%">학과 공지</button><button style="margin-left: 1%">구인 정보</button>
+    </div>
+    <div class="right">
+        <h2 id="Info_title">구인 정보</h2>
+        <div id="Info_Notice_table"></div>
+    </div>
+</span>
+</body>
+</html>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $.ajax({
+            url:"../data/Univ_Notice.txt",
+            dataType:"text",
+            success:function(data)
+            {
+                var title_data = data.split(/\r?\n|\r/);
+                var table_data = '<table id="Hi">';
+                var table_head_num = '<th scope="col">등록일</th>';
+                var table_head_title = '<th scope="col">제목</th>';
+                var table_head_writer = '<th scope="col">작성자</th>';
+                table_data += table_head_num;
+                table_data += table_head_title;
+                table_data += table_head_writer;
+                var index;
+                for (index = 0; index < title_data.length; index++)
+                {
+                    if (title_data[index].startsWith('?'))
+                    {
+                        break;
+                    }
+                }
+                for(var count = 0; count < index; count++)
+                {
+                    var cell_data = title_data[count].split('\t');
+                    typeof cell_data ==='string';
+                    table_data += '<tr>';
+                    for(var cell_count=0; cell_count<cell_data.length; cell_count++)
+                    {
+                        if (cell_data[cell_count].startsWith("[중요]"))
+                        {
+                            table_data += '<td>'+'<a id="important">[중요]</a><a class="Univ_a" href="https://www.kumoh.ac.kr/ko/sub06_01_01_01.do' + title_data[index + count] + '" target="_blank" style="text-decoration:none">' + cell_data[cell_count].replace("[중요]","")+ '</a></td>';
+                        }
+                        else if (cell_count % 2 == 1)
+                        {
+                            table_data += '<td>'+'<a class="Univ_a" href="https://www.kumoh.ac.kr/ko/sub06_01_01_01.do' + title_data[index + count] + '" target="_blank" style="text-decoration:none">' + cell_data[cell_count]+ '</a></td>';
+
+                        }
+                        else
+                        {
+                            table_data += '<td>'+ '<a class="Univ_a">' + cell_data[cell_count] + '</a>' + '</td>';
+                        }
+                    }
+                table_data += '</tr>';
+            }
+            table_data += '</table>';
+            $('#Univ_Notice_table').html(table_data);
+        }
+    });
+}); 
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $.ajax({
+            url:"../data/Depart_Notice.txt",
+            dataType:"text",
+            success:function(data)
+            {
+                var title_data = data.split(/\r?\n|\r/);
+                var table_data = '<table class="table table-bordered table-striped">';
+                var table_head_num = '<th scope="col">등록일</th>';
+                var table_head_title = '<th scope="col">제목</th>';
+                var table_head_writer = '<th scope="col">작성자</th>';
+                table_data += table_head_num;
+                table_data += table_head_title;
+                table_data += table_head_writer;
+                var index;
+                for (index = 0; index < title_data.length; index++)
+                {
+                    if (title_data[index].startsWith('?'))
+                    {
+                        break;
+                    }
+                }
+                for(var count = 0; count<index; count++)
+                {
+                    var cell_data = title_data[count].split('\t');
+                    typeof cell_data ==='string';
+                    table_data += '<tr>';
+                    for(var cell_count=0; cell_count<cell_data.length; cell_count++)
+                    {
+                        if (cell_data[cell_count].startsWith("[중요]"))
+                        {
+                            table_data += '<td>'+'<a id="important">[중요]</a><a class="Univ_a" href="https://ce.kumoh.ac.kr/ce/sub0501.do' + title_data[index + count] + '" target="_blank" style="text-decoration:none">' + cell_data[cell_count].replace("[중요]","")+ '</a></td>';
+                        }
+                        else if (cell_count % 2 == 1)
+                        {
+                            table_data += '<td>'+'<a class="Depart_a" href="https://ce.kumoh.ac.kr/ce/sub0501.do' + title_data[index + count] + '" target="_blank" style="text-decoration:none">' + cell_data[cell_count]+ '</a></td>';
+
+                        }
+                        else
+                        {
+                            table_data += '<td>'+ '<a class="Depart_a">' + cell_data[cell_count] + '</a>' + '</td>';
+                        }
+                    }
+                table_data += '</tr>';
+            }
+            table_data += '</table>';
+            $('#Depart_Notice_table').html(table_data);
+        }
+    });
+}); 
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $.ajax({
+            url:"../data/Info_Notice.txt",
+            dataType:"text",
+            success:function(data)
+            {
+                var title_data = data.split(/\r?\n|\r/);
+                var table_data = '<table class="table table-bordered table-striped">';
+                var table_head_num = '<th scope="col">등록일</th>';
+                var table_head_title = '<th scope="col">제목</th>';
+                var table_head_writer = '<th scope="col">작성자</th>';
+                table_data += table_head_num;
+                table_data += table_head_title;
+                table_data += table_head_writer;
+                var index;
+                for (index = 0; index < title_data.length; index++)
+                {
+                    if (title_data[index].startsWith('?'))
+                    {
+                        break;
+                    }
+                }
+                for(var count = 0; count<index; count++)
+                {
+                    var cell_data = title_data[count].split('\t');
+                    typeof cell_data ==='string';
+                    table_data += '<tr>';
+                    for(var cell_count=0; cell_count<cell_data.length; cell_count++)
+                    {
+                        if (cell_count % 2 == 1)
+                        {
+                            table_data += '<td>'+'<a class="Info_a" href="https://www.kumoh.ac.kr/ko/sub06_03_04_04.do' + title_data[index + count] + '" target="_blank" style="text-decoration:none">' + cell_data[cell_count]+ '</a></td>';
+
+                        }
+                        else
+                        {
+                            table_data += '<td>'+ '<a class="https://www.kumoh.ac.kr/ko/sub06_03_04_04.do">' + cell_data[cell_count] + '</a>' + '</td>';
+                        }
+                    }
+                table_data += '</tr>';
+            }
+            table_data += '</table>';
+            $('#Info_Notice_table').html(table_data);
+        }
+    });
+}); 
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $.ajax({
+            url:"../data/Schedule.txt",
+            dataType:"text",
+            success:function(data)
+            {
+                var title_data = data.split('\n');
+                var table_data = '<table class="table table-bordered table-striped">';
+                var cell_data = title_data[0].split('\t');
+                table_data += '<tr>';
+                table_data += '<td id="D1">';
+                table_data += cell_data[0];
+                table_data += '</td>';
+                table_data += '<td>' + cell_data[1] + '</td>';
+                table_data += '</tr>';
+                cell_data = title_data[1].split('\t');
+                table_data += '<tr>';
+                table_data += '<td id="D2">';
+                table_data += cell_data[0];
+                table_data += '</td>';
+                table_data += '<td>' + cell_data[1] + '</td>';
+                table_data += '</tr>';
+                cell_data = title_data[2].split('\t');
+                table_data += '<tr>';
+                table_data += '<td id="D3">';
+                table_data += cell_data[0];
+                table_data += '</td>';
+                table_data += '<td>' + cell_data[1] + '</td>';
+                table_data += '</tr>';
+                
+            table_data += '</table>';
+            $('#Schedule_table').html(table_data);
+            }
+    });
+}); 
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $.ajax({
+            url:"../data/Weather_Info.txt",
+            dataType:"text",
+            success:function(data)
+            {
+                var title_data = data.split('\n');
+                var table_data = '<table id="weathertable">';
+                var cell_data = title_data[0].split(',');
+                cell_data = cell_data[0].split("'");
+                table_data += '<tr>';
+                table_data += '<td id="nowtemp">';
+                table_data += cell_data[1] + '˚';
+                table_data += '</td>';
+                table_data += '</tr>';
+                table_data += '<tr>';
+                table_data += '<td id="bodytemp">';
+                cell_data = title_data[1].split("'");
+                table_data += ' | ' + cell_data[1];
+                table_data += '</td>';
+                table_data += '</tr>';
+                table_data += '<a id="Ytemp">';
+                cell_data = title_data[2].split("'");
+                table_data += cell_data[1];
+                typeof cell_data === 'string';
+                if (cell_data[1].startsWith("비"))
+                {
+                    table_data += '<img src="https://ssl.pstatic.net/sstatic/keypage/outside/scui/weather_new/img/weather_svg/icon_wt_09.svg">';
+                }
+                else if (cell_data[1].startsWith("맑음"))
+                {
+                    table_data += '<img src="https://ssl.pstatic.net/sstatic/keypage/outside/scui/weather_new/img/weather_svg/icon_wt_01.svg">';
+                }
+                else if (cell_data[1].startsWith("흐림"))
+                {
+                    table_data += '<img src="https://ssl.pstatic.net/sstatic/keypage/outside/scui/weather_new/img/weather_svg/icon_wt_07.svg">';
+                }
+                else if (cell_data[1].startsWith("구름많고 한때 소나기"))
+                {
+                    table_data += '<img src="https://ssl.pstatic.net/sstatic/keypage/outside/scui/weather_new/img/weather_svg/icon_wt_15.svg">';
+                }
+                table_data += '<tr>';
+                table_data += '<td id="mintemp">';
+                cell_data = title_data[3].split("'");
+                table_data += cell_data[1] + '<a id="slash"> /</a>';
+                table_data += '</td>';
+                table_data += '</tr>';
+                table_data += '<tr>';
+                table_data += '<td id="maxtemp">';
+                cell_data = title_data[4].split("'");
+                table_data += cell_data[1];
+                table_data += '</td>';
+                table_data += '</tr>';
+            table_data += '</table>';
+            $('#Weather_table').html(table_data);
+            }
+    });
+}); 
+</script>
+
+<script>
+    const menus = document.querySelectorAll("button");
+
+    //menu_1
+    menus[0].onclick = function()
+    {
+        document.getElementById('Univ_title').scrollIntoView({behavior: 'smooth'});
+    }
+    menus[1].onclick = function()
+    {
+        document.getElementById('Depart_title').scrollIntoView({behavior: 'smooth'});
+    }
+    menus[2].onclick = function()
+    {
+        document.getElementById('Info_title').scrollIntoView({behavior: 'smooth'});
+    }
+
+    //menu_2
+    menus[4].onclick = function()
+    {
+        document.getElementById('Univ_title').scrollIntoView({behavior: 'smooth'});
+    }
+    menus[5].onclick = function()
+    {
+        document.getElementById('Depart_title').scrollIntoView({behavior: 'smooth'});
+    }
+    menus[6].onclick = function()
+    {
+        document.getElementById('Info_title').scrollIntoView({behavior: 'smooth'});
+    }
+
+    //menu_3
+    menus[7].onclick = function()
+    {
+        document.getElementById('Univ_title').scrollIntoView({behavior: 'smooth'});
+    }
+    menus[8].onclick = function()
+    {
+        document.getElementById('Depart_title').scrollIntoView({behavior: 'smooth'});
+    }
+    menus[9].onclick = function()
+    {
+        document.getElementById('Info_title').scrollIntoView({behavior: 'smooth'});
+    }
+
+    //refresh
+    menus[3].onclick = function()
+    {
+        window.location.reload();
+    }
+</script>
+
+<script>
+    var hrefs = document.getElementsByClassName("Univ_a");
+
+    
+    
+</script>
